@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"context"
 
@@ -17,7 +18,21 @@ var (
 	ctx        = context.Background()
 )
 
-func Create(user models.User) error {
+type UserRepository interface {
+	Create(user models.User) error
+	Read() (models.Users, error)
+	Update(user models.User, id string) error
+	Delete(id string) error
+}
+
+type userRepository struct {
+}
+
+func NewUserRepository(*mongo.Collection) UserRepository {
+	return &userRepository{}
+}
+
+func (u *userRepository) Create(user models.User) error {
 
 	var err error
 	_, err = collection.InsertOne(ctx, user)
@@ -27,7 +42,7 @@ func Create(user models.User) error {
 	return nil
 }
 
-func Read() (models.Users, error) {
+func (u *userRepository) Read() (models.Users, error) {
 
 	var users models.Users
 	filter := bson.D{}
@@ -49,7 +64,7 @@ func Read() (models.Users, error) {
 	return users, nil
 }
 
-func Update(user models.User, id string) error {
+func (u *userRepository) Update(user models.User, id string) error {
 
 	oid, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": oid}
@@ -68,7 +83,7 @@ func Update(user models.User, id string) error {
 	return nil
 }
 
-func Delete(id string) error {
+func (u *userRepository) Delete(id string) error {
 
 	oid, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": oid}

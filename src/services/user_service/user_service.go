@@ -3,11 +3,33 @@ package user_service
 import (
 	"bwm-api-repository/src/models"
 	"bwm-api-repository/src/repositories/user_repository"
+
+	"github.com/sirupsen/logrus"
 )
 
-func Create(user models.User) error {
+type UserService interface {
+	Create(user models.User) error
+	Read() (models.Users, error)
+	Update(user models.User, id string) error
+	Delete(id string) error
+}
 
-	err := user_repository.Create(user)
+type userService struct {
+	log            *logrus.Logger
+	userRepository user_repository.UserRepository
+}
+
+func NewUserService(log *logrus.Logger, repository user_repository.UserRepository) UserService {
+
+	return &userService{
+		log:            log,
+		userRepository: repository,
+	}
+}
+
+func (u *userService) Create(user models.User) error {
+
+	err := u.userRepository.Create(user)
 
 	if err != nil {
 		return err
@@ -16,17 +38,17 @@ func Create(user models.User) error {
 	return nil
 }
 
-func Read() (models.Users, error) {
-	users, err := user_repository.Read()
+func (u *userService) Read() (models.Users, error) {
+	users, err := u.userRepository.Read()
 	if err != nil {
 		return nil, err
 	}
 	return users, nil
 }
 
-func Update(user models.User, id string) error {
+func (u *userService) Update(user models.User, id string) error {
 
-	err := user_repository.Update(user, id)
+	err := u.userRepository.Update(user, id)
 
 	if err != nil {
 		return err
@@ -35,9 +57,9 @@ func Update(user models.User, id string) error {
 	return nil
 }
 
-func Delete(id string) error {
+func (u *userService) Delete(id string) error {
 
-	err := user_repository.Delete(id)
+	err := u.userRepository.Delete(id)
 
 	if err != nil {
 		return err

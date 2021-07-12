@@ -1,13 +1,28 @@
 package user_service_test
 
 import (
+	"bwm-api-repository/src/database"
 	"bwm-api-repository/src/models"
+	"bwm-api-repository/src/repositories/user_repository"
 	"bwm-api-repository/src/services/user_service"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus/hooks/test"
 )
 
+var (
+	service user_service.UserService
+)
+
+func init() {
+	logger, _ := test.NewNullLogger()
+	repository := user_repository.NewUserRepository(database.GetCollection("users"))
+	service = user_service.NewUserService(logger, repository)
+}
+
 func TestServiceCreate(t *testing.T) {
+
 	usr1 := models.User{
 		Name:     "Seba",
 		Surname:  "Remaggi",
@@ -15,7 +30,7 @@ func TestServiceCreate(t *testing.T) {
 		CreateAt: time.Now(),
 	}
 
-	err := user_service.Create(usr1)
+	err := service.Create(usr1)
 	if err != nil {
 		t.Error("Ha fallado el test")
 	} else {
@@ -25,7 +40,7 @@ func TestServiceCreate(t *testing.T) {
 
 func TestServiceRead(t *testing.T) {
 
-	users, err := user_service.Read()
+	users, err := service.Read()
 	if err != nil {
 		t.Error("Ha fallado el test")
 		t.Fail()
@@ -48,7 +63,7 @@ func TestServiceUpdate(t *testing.T) {
 		Email: "gio@gmail.com",
 	}
 
-	err := user_service.Update(user, "60dafa96acff82038f718701")
+	err := service.Update(user, "60dafa96acff82038f718701")
 	if err != nil {
 		t.Error("Error al actualizar los datos")
 		t.Fail()
@@ -59,7 +74,7 @@ func TestServiceUpdate(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 
-	err := user_service.Delete("60dbe5ea3b99308bda5153c1")
+	err := service.Delete("60dbe5ea3b99308bda5153c1")
 	if err != nil {
 		t.Error("Error al actualizar los datos")
 		t.Fail()
