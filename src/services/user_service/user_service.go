@@ -38,6 +38,7 @@ func (u *userService) Create(user models.User) error {
 	return nil
 }
 
+
 func (u *userService) Read() (models.Users, error) {
 	users, err := u.userRepository.Read()
 	if err != nil {
