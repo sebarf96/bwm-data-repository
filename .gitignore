@@ -2,3 +2,4 @@
 .build/
 main.exe
 .idea/
+build/bin/bmw-data-repoitory

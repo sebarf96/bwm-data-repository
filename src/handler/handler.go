@@ -18,7 +18,7 @@ import (
 func NewHandler(ep m.Eps, port string) {
 
 	createHandler := httptransport.NewServer(ep.CreateEP, decodeCreateRequest, encodeResponse)
-	readHandler := httptransport.NewServer(ep.DeleteEP, decodeReadRequest, encodeResponse)
+	readHandler := httptransport.NewServer(ep.ReadEP, decodeReadRequest, encodeResponse)
 	updateHandler := httptransport.NewServer(ep.UpdateEP, decodeUpdateRequest, encodeResponse)
 	deleteHandler := httptransport.NewServer(ep.DeleteEP, decodeDeleteRequest, encodeResponse)
 
@@ -26,9 +26,8 @@ func NewHandler(ep m.Eps, port string) {
 	http.Handle("/read", readHandler)
 	http.Handle("/update/{id}", updateHandler)
 	http.Handle("/delete/{id}", deleteHandler)
-
+	log.Println("Listen at port ::",port[1:])
 	log.Fatal(http.ListenAndServe(port, nil))
-	log.Println("Listen at port: ", port)
 
 }
 

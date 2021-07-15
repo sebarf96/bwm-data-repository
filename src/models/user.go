@@ -4,6 +4,7 @@ import "time"
 
 //User datos del usuario
 type User struct {
+	ID string
 	Name     string    `json:"name"`
 	Surname  string    `json:"surname"`
 	Email    string    `json:"email"`
