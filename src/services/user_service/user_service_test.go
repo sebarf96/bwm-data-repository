@@ -5,10 +5,10 @@ import (
 	"bwm-api-repository/src/models"
 	"bwm-api-repository/src/repositories/user_repository"
 	"bwm-api-repository/src/services/user_service"
+	"github.com/go-kit/kit/log"
+	"os"
 	"testing"
 	"time"
-
-	"github.com/sirupsen/logrus/hooks/test"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	logger, _ := test.NewNullLogger()
+	logger := log.NewLogfmtLogger(os.Stderr)
 	repository := user_repository.NewUserRepository(database.GetCollection("users"))
 	service = user_service.NewUserService(logger, repository)
 }
@@ -30,11 +30,11 @@ func TestServiceCreate(t *testing.T) {
 		CreateAt: time.Now(),
 	}
 
-	err := service.Create(usr1)
+	res,err := service.Create(usr1)
 	if err != nil {
-		t.Error("Ha fallado el test")
+		t.Error("Test fail")
 	} else {
-		t.Log("Exito")
+		t.Log("Test assert", res)
 	}
 }
 

@@ -11,11 +11,11 @@ import (
 func MakeUserCreateEndpoint(svc user_service.UserService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(models.User)
-		err := svc.Create(req)
+		res,err := svc.Create(req)
 		if err != nil {
 			return err, nil
 		}
-		return err, nil
+		return res, nil
 	}
 }
 

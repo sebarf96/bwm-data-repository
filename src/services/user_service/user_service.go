@@ -3,23 +3,22 @@ package user_service
 import (
 	"bwm-api-repository/src/models"
 	"bwm-api-repository/src/repositories/user_repository"
-
-	"github.com/sirupsen/logrus"
+	"github.com/go-kit/kit/log"
 )
 
 type UserService interface {
-	Create(user models.User) error
+	Create(user models.User) (string,error)
 	Read() (models.Users, error)
 	Update(user models.User, id string) error
 	Delete(id string) error
 }
 
 type userService struct {
-	log            *logrus.Logger
+	log            log.Logger
 	userRepository user_repository.UserRepository
 }
 
-func NewUserService(log *logrus.Logger, repository user_repository.UserRepository) UserService {
+func NewUserService(log log.Logger, repository user_repository.UserRepository) UserService {
 
 	return &userService{
 		log:            log,
@@ -27,15 +26,15 @@ func NewUserService(log *logrus.Logger, repository user_repository.UserRepositor
 	}
 }
 
-func (u *userService) Create(user models.User) error {
+func (u *userService) Create(user models.User) (string,error) {
 
 	err := u.userRepository.Create(user)
 
 	if err != nil {
-		return err
+		return "",err
 	}
 
-	return nil
+	return "User created succesfully",nil
 }
 
 
